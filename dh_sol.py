@@ -45,7 +45,7 @@ from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 import json
 
-URL = ""  ## Update this URL to match the IP given in the instructions.
+URL = "http://128.105.19.18:5000"  ## Update this URL to match the IP given in the instructions.
 
 EC_CURVE = ec.SECP384R1()
 ENCODING = Encoding.X962
@@ -53,8 +53,17 @@ FORMAT = PublicFormat.CompressedPoint
 
 
 #### Your code starts here #####
-
-
+x = ec.generate_private_key(EC_CURVE)
+gx = x.public_key()
+gx_str = base64.urlsafe_b64encode(gx.public_bytes(ENCODING, FORMAT))
+r = requests.get(URL + '/dh', params={
+    'gx': gx_str
+})
+r_obj = json.loads(r.content)
+gy_str, c = r_obj["gy"], r_obj["c"]
+gy_bin = base64.urlsafe_b64decode(gy_str)
+gy = ec.EllipticCurvePublicKey.from_encoded_point(EC_CURVE, gy_bin)
+gxy = x.exchange(ec.ECDH(), gy)
 
 
 #### Don't change the code below ####
