@@ -2,18 +2,72 @@
 
 ## Recovered password
 
+srstephenso2's password is 00316759.
+ceccio's       password is 41467847.
+
 ## Pseudocode for attack
+
+user1 <- "ceccio" + ","
+user2 <- "srstephenso2" + ","
+salt1 <- "," + "72420522"
+salt2 <- "," + "86737697"
+target1 <- "0da91811c43bc8f156aea0fa963a8d6c3ef14b7a398fe0af79a406f64a8f6fa3"
+target2 <- "35ed5754f749aa4138381ae746c845ca94d4c9d81bedcae90006e3b6b5c2c37a"
+
+pswlen <- 1
+flag <- [False,False]
+
+while pswlen < 9 do
+    max_ <- 10**pswlen
+    for i = 0 to max_ do
+        tmp <- str(i)
+        tmp <- "0"*(pswlen-len(tmp)) + tmp
+        total1 <- user1+tmp+salt1
+        total2 <- user2+tmp+salt2
+
+        if flag[0]==False AND target1 == hashlib.sha256(f"{total1}".encode()).hexdigest() then
+            Print f"{user1}'s password is {tmp}."
+            flag[0] <- True
+            if flag[1] == True then
+                exit()
+            end if
+        end if
+
+        if flag[1]==False AND target2 == hashlib.sha256(f"{total2}".encode()).hexdigest() then
+            Print f"{user2}'s password is {tmp}."
+            flag[1] <- True
+            if flag[0]==True then
+                exit()
+            end if 
+        end if
+    end for
+    pswlen <- pswlen +1
+end while
 
 ## Worst case running time
 
+Because it is just brutal and tries every possible combination, the worst case will be O(10^9).
+
 ## Discussion of current proposal and suggestions for improvement
+
+The current proposal just tries every possible password and tests its hash value to figuire out which one is correct.
+This method will cost O(10^7) in the worst case, which is slow.
+To improve that, we can consider multithread/multiprocess programming, which we utilized to solve the bonus question.
 
 
 # Part B:
 
 ## Discussion of the current scheme
+ 
+ The current scheme is AES in CBC mode. 
+ AES-CBC cannot prove that the ciphertext was not modified by any attacker. 
+ In this case, what we want to modify is in the first block, therefore we can just change IV value to tamper the plaintext. 
+ To be more specific, we will get original IV(IV) and original plaintext(PL), and what we do is find another IV(IV'),which XOR with the modified plaintext(PL') will equal to IV XOR PL. Then, it will not affect the following message at all, which will make the modification hard to be noticed.
 
 ## Suggestions for improving the scheme
+
+The main problem of AES-CBC is unauthenticated. Therefore, it is vulnerable to chosen ciphertext attack.
+I suggest it to combine with MAC(e.g. HMAC-SHA1), then the receiver can validate if the message is from the original sender before decrypt it.
 
 
 # Part C:
