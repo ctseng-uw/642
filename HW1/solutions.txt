@@ -51,8 +51,11 @@ Because it is just brutal and tries every possible combination, the worst case w
 ## Discussion of current proposal and suggestions for improvement
 
 The current proposal just tries every possible password and tests its hash value to figuire out which one is correct.
-This method will cost O(10^7) in the worst case, which is slow.
-To improve that, we can consider multithread/multiprocess programming, which we utilized to solve the bonus question.
+This method will cost O(10^7) in the worst case, which is slow but still works.
+
+To improve this system, we can add a long secret string and hash it with username,password, and salt. 
+To be more specific, what we put in the hash function will be a string like f"{username},{password},{secret},{salt}". Then it will be hard to crack when the size of secret is large because the runtime may up to O(N^(len(password)+len(secret)).
+Another way might be requiring users to set up their passwords with uppercasse and lowercase letters, numbers, and at least one special character, which will be harder to crack,too.
 
 
 # Part B:
