@@ -46,12 +46,11 @@ end while
 ```
 ## Worst case running time
 
-Because it is just brute force and tries every possible combination, the worst case will be O(10^9).
+Because it is just brute force and tries every possible combination, the worst case will need 10^9 hashing.
 
 ## Discussion of current proposal and suggestions for improvement
 
-The current proposal tries every possible password and tests its hash value to figuire out which one is correct.
-This method will cost O(10^7) in the worst case, which is slow but still works.
+The current proposal is crackable because worstcase running time is acceptable. (Although the cracking might be slow, it can work.)
 
 To improve this system, we can add a long secret string and hash it with username,password, and salt. 
 To be more specific, what we put in the hash function will be a string like f"{username},{password},{secret},{salt}". Then it will be hard to crack when the size of secret is large because the runtime may up to O(N^(len(password)+len(secret)).
