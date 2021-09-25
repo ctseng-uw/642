@@ -12,23 +12,9 @@ TARGET = "80cb3696e6fe9953e61048ad0013e4e9d31e26d0b10eec5650b26625033dfbe4203f1c
 USERNAME = "bucky"
 
 
-def crypt(q: Queue, ppid: int):
-    while True:
-        message = q.get()
-        message = USERNAME + "," + message
-        if message is None:
-            break
-        h = hashlib.scrypt(password=message.encode(),
-                           salt=salt.encode(),
-                           n=16,
-                           r=32,
-                           p=1)
-        if h.hex() == TARGET:
-            print(message)
-            os.kill(ppid, signal.SIGTERM)
 
 
-def gen():
+def main():
     with open("crackstation-human-only.txt", "r", encoding="latin1") as f:
         cnt = 0
         for line in f:
@@ -52,14 +38,15 @@ def gen():
                     break
             else:
                 continue
-            yield line
-
-
-def main():
-    q = Queue(maxsize=NPROCESS * 2)
-    with Pool(NPROCESS, initializer=crypt, initargs=(q, os.getpid())):
-        for string in gen():
-            q.put(string)
+            message = USERNAME + "," + line
+            h = hashlib.scrypt(password=message.encode(),
+                            salt=salt.encode(),
+                            n=16,
+                            r=32,
+                            p=1)
+            if h.hex() == TARGET:
+                print(message)
+                exit()
 
 
 if __name__ == "__main__":
