@@ -69,8 +69,10 @@ Another way might be requiring users to set up their passwords with uppercasse a
 ## Suggestions for improving the scheme
 
 The main problem of AES-CBC is unauthenticated. Therefore, it is vulnerable to chosen ciphertext attack.
-I suggest it to combine with MAC(e.g. HMAC-SHA1), then the receiver can validate if the message is from the original sender before decrypt it.
 
+I suggest it combine with MAC(e.g. HMAC-SHA1), then the receiver can validate if the message is from the original sender before decrypting it. 
+Although the original proposal also consists of hash function, it has no authentication at all. Because everyone knows the hash function and what it hash is the plaintext, which is the most vulnerable combination.
+So, to improve that, it can take the "Encrypt, then MAC" scheme, which will be much more secure.
 
 # Part C:
 
