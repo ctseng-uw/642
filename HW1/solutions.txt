@@ -55,9 +55,10 @@ Because we are using brute force and try every possible combination, we will nee
 
 The current proposal is crackable because worst-case running time is acceptable. (Although the cracking might be slow, it can work.)
 
-To improve this system, we can add a long secret string and hash it with username, password, and salt. (The secret will be stored in the application's code and not in database)  
-To be more specific, we will put a string like f"{username},{password},{secret},{salt}" in the hash function. Then it will be hard to crack when the size of secret is large because it may take up to N^(len(password)+len(secret) hashes.  
-Another way might be requiring users to set up their passwords with uppercase and lowercase letters, numbers, and at least one special character, which will be harder to crack, too.
+To improve this system, we can add a long secret string (pepper) and hash it with username, password, and salt. (The secret will be stored in the application's code and not in database)  
+To be more specific, we will put a string like f"{username},{password},{pepper},{salt}" in the hash function. Then it will be hard to crack when the size of pepper is large because it may take up to N^(len(password)+len(pepper)) hashes.  
+Additionally, we can use "slower" hash function such as scrypt and argon2.  
+Finally, we might want to require users to set up their passwords with uppercase and lowercase letters, numbers, and at least one special character, which will be harder to crack, too.
 
 
 # Part B:
