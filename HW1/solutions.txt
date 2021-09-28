@@ -1,8 +1,11 @@
+Member 1: Pei-Chieh Lo (plo7)  
+Member 2: Chang-Yen Tseng (ctseng27)
+
 # Part A:
 
 ## Recovered password
 
-srstephenso2's password is 00316759.
+srstephenso2's password is 00316759.  
 ceccio's       password is 41467847.
 
 ## Pseudocode for attack
@@ -46,33 +49,33 @@ end while
 ```
 ## Worst case running time
 
-Because it is just brute force and tries every possible combination, the worst case will need 10^9 hashing.
+Because we are using brute force and try every possible combination, we will need 10^9 hashes in the worst case (per account).
 
 ## Discussion of current proposal and suggestions for improvement
 
-The current proposal is crackable because worstcase running time is acceptable. (Although the cracking might be slow, it can work.)
+The current proposal is crackable because worst-case running time is acceptable. (Although the cracking might be slow, it can work.)
 
-To improve this system, we can add a long secret string and hash it with username,password, and salt. 
-To be more specific, what we put in the hash function will be a string like f"{username},{password},{secret},{salt}". Then it will be hard to crack when the size of secret is large because the runtime may up to O(N^(len(password)+len(secret)).
-Another way might be requiring users to set up their passwords with uppercasse and lowercase letters, numbers, and at least one special character, which will be harder to crack,too.
+To improve this system, we can add a long secret string and hash it with username, password, and salt. (The secret will be stored in the application's code and not in database)  
+To be more specific, we will put a string like f"{username},{password},{secret},{salt}" in the hash function. Then it will be hard to crack when the size of secret is large because it may take up to N^(len(password)+len(secret) hashes.  
+Another way might be requiring users to set up their passwords with uppercase and lowercase letters, numbers, and at least one special character, which will be harder to crack, too.
 
 
 # Part B:
 
 ## Discussion of the current scheme
  
- The current scheme is AES in CBC mode. 
- AES-CBC cannot prove that the ciphertext was not modified by any attacker. 
- In this case, what we want to modify is in the first block, therefore we can change IV to tamper the plaintext. 
- To be more specific, we will get original IV(IV) and original plaintext(PL), and what we do is find another IV(IV'), which XOR with the modified plaintext(PL') will equal to IV XOR PL. Then, it will not affect the following message at all, which will make the modification hard to be noticed.
+The current scheme is AES in CBC mode.  
+AES-CBC cannot prove that the ciphertext was not modified by any attacker.   
+In this case, the data we want to modify is in the first block, therefore we can change IV to tamper with the plaintext.   
+To be more specific, we need to get the original IV(IV) and the original plaintext(PL), and then, we can find another IV(IV') such that IV' XOR the modified plaintext(PL') will equal to IV XOR PL. This will not affect the following message at all, which will make the modification hard to be noticed.
 
 ## Suggestions for improving the scheme
 
-The main problem of AES-CBC is unauthenticated. Therefore, it is vulnerable to chosen ciphertext attack.
+The main problem of AES-CBC is that it does not provide authentication. Therefore, it is vulnerable to chosen ciphertext attack.
 
-I suggest it combine with MAC(e.g. HMAC-SHA1), then the receiver can validate if the message is from the original sender before decrypting it. 
-Although the original proposal also consists of hash function, it has no authentication at all. Because everyone knows the hash function and what it hash is the plaintext, which is the most vulnerable combination.
-So, to improve that, it can take the "Encrypt, then MAC" scheme, which will be much more secure.
+We suggest combining AES-CBC with MAC (e.g. HMAC-SHA1), so the receiver can validate if the message is from the original sender before decrypting it.  
+Although the original proposal also consists of a hash function, it has no authentication at all. Because the hash function is public and what the original proposal hash is the plaintext, which is the most vulnerable combination.  
+So, to improve that, we can take the "Encrypt, then MAC" approach, which will be much more secure.
 
 # Part C:
 
