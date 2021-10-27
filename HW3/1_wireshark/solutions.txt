@@ -1,35 +1,85 @@
-# Your UW ID and your name - there is no special format for this. (This homework ought to be done individually)
+# IDs and names
 
+1. Chang-Yen Tseng (ctseng27)
+2. Pei-Chieh Lo (plo7)  
 
 # Trace 1: HTTP
 ## Give three websites (domain Nname and IP addresses) visited from source IP address `192.168.0.100`
 
+1. 
+domain name: ecx.images-amazon.com
+IP address: 54.230.33.13
+
+2. 
+domain name: completion.amazon.com
+IP address: 207.171.162.173
+
+3.
+domain name: ts1.mm.bing.net
+IP address: 184.85.215.24
+
+
 ## Give three search queries and the domain of the site for each query made from source IP address `192.168.0.100`
 
+1. Standard query 0x39e6 A accounts.l.google.com
+2. Standard query 0xe1ac A nipc.org
+3. Standard query 0xf772 A completion.amazon.com
 
 # Trace 2: FTP
 ## What is the user name and password used to connect to the FTP server?
 
+user name: shiningmoon
+password: public
+
 ## List any (and all) files that were downloaded.
 
+dragon.zip, ARP.java, L2Switch.java, phase1.html
 
 ## List the full path for two files (in different directories) on the FTP server that were NOT downloaded.
 
+(by th LIST command response)
+1. /mylog_Sat-May-05-17-27-06-CST-2012.txt
+2. /phase1/StoreForwardingDatalink.java
 
 # Trace 3: Traceroute
 ## Briefly describe how the traceroute tool works including which network protocols are in use.
 
+Traceroute tool is to discover the routers between source and destination. To get this information, it needs UDP and ICMP.
+The client will send out packet with UDP and set up TTL to 1 initially. After the packet reaches first router, the TTL will become 0(1-1=0), therefore it will send the message back to the source with ICMP protocol.
+Then, because the client receives the error message saying TTL exceeding, it knows the packet did not reach destination. The client then sends out the packet again with UDP and adds TTL by 1. If the packet does not reach destination, it will send back TTL exceed again from the router it reached(This time is the second router).
+This will continue until the ICMP message becomes "destination unreachable" which indicates the packet arrives the destination.
+And, we can get the routers' IP address in between source and destination by the ICMP message(by the source IP address in each ICMP part).
+
 ## Give the source IP address that issued the traceroute command and the destination IP address.
+
+source IP address: 192.168.0.100
+destination IP address: 74.125.225.46
 
 ## List the IP addresses on the route between source and destination.
 
+192.168.0.100(src) -> 192.168.0.1 -> 10.131.180.1 -> 96.34.20.20 -> 96.34.17.95 -> 96.34.16.112 -> 96.34.16.77 -> 96.34.2.4 -> 96.34.0.7 -> 96.34.0.9 -> 96.34.3.9 -> 96.34.152.30 -> 209.85.254.120 -> 209.85.250.28 -> 74.125.225.46(dest)
 
 # Trace 4: POP
+
 ## What is the POP username and password?
+
+username: cs155@dummymail.command
+password: whitehat
 
 ## How many emails are in the user's mailbox?
 
+5 emails
+
 ## Give the contents of from, to, subject, and date for one email message.
 
+message 5
+from: hariny <harinym@stanford.edu>
+to: cs155@dummymail.com
+subject: test message
+date: 2010, April, 23 (Friday) 10:25:08
+
 ## What email client (application) and operating system is this person using to send and receive email?
+
+(by User-Agent info)
+Thunderbird 2.0.0.23 (Windows/20090812) 
 
