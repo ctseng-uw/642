@@ -2,6 +2,7 @@ import dpkt
 import socket
 import sys
 from collections import defaultdict, deque
+from itertools import chain
 
 
 def inet_to_str(inet):
@@ -62,18 +63,25 @@ def portscan(pcap):
 
 
 def synflood(pcap):
-    data = defaultdict(deque)
+    synpkts = defaultdict(list)  # key (src, sport, dst, dport, seq)
     for pnum, (ts, buf) in enumerate(pcap):
         eth = dpkt.ethernet.Ethernet(buf)
         if not (
-            isinstance(eth.data, dpkt.ip.IP)
-            and isinstance(eth.data.data, dpkt.tcp.TCP)
-            and eth.data.data.flags == 2
+            isinstance(eth.data, dpkt.ip.IP) and isinstance(eth.data.data, dpkt.tcp.TCP)
         ):
             continue
         ip = eth.data
-        dst = ip.dst
-        dport = ip.data.dport
+        tcp = eth.data.data
+        if tcp.flags == 0x2:  # SYN
+            key = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq)
+            synpkts[key].append((pnum, ts, ip.dst, tcp.dport))
+        elif tcp.flags == 0x10:  # ACK
+            key = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq - 1)
+            if key in synpkts and synpkts[key]:
+                synpkts[key].pop()
+
+    data = defaultdict(deque)
+    for pnum, ts, dst, dport in sorted(chain.from_iterable(synpkts.values())):
         key = (dst, dport)
         if len(data[key]) > 100:
             continue
