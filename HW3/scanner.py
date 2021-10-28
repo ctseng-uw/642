@@ -64,6 +64,7 @@ def portscan(pcap):
 
 def synflood(pcap):
     synpkts = defaultdict(list)  # key (src, sport, dst, dport, seq)
+    synackpkts = defaultdict(int)
     for pnum, (ts, buf) in enumerate(pcap):
         eth = dpkt.ethernet.Ethernet(buf)
         if not (
@@ -75,10 +76,22 @@ def synflood(pcap):
         if tcp.flags == 0x2:  # SYN
             key = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq)
             synpkts[key].append((pnum, ts, ip.dst, tcp.dport))
+        elif tcp.flags == 0x12:
+            key1 = (ip.dst, tcp.dport, ip.src, tcp.sport, tcp.ack - 1)
+            key2 = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq)
+            if key1 in synpkts and synpkts[key1]:
+                synackpkts[key2] += 1
         elif tcp.flags == 0x10:  # ACK
-            key = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq - 1)
-            if key in synpkts and synpkts[key]:
-                synpkts[key].pop()
+            key1 = (ip.src, tcp.sport, ip.dst, tcp.dport, tcp.seq - 1)
+            key2 = (ip.dst, tcp.dport, ip.src, tcp.sport, tcp.ack - 1)
+            if (
+                key1 in synpkts
+                and synpkts[key1]
+                and key2 in synackpkts
+                and synackpkts[key2] > 0
+            ):
+                synpkts[key1].pop()
+                synackpkts[key2] -= 1
 
     data = defaultdict(deque)
     for pnum, ts, dst, dport in sorted(chain.from_iterable(synpkts.values())):
