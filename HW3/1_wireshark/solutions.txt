@@ -21,9 +21,18 @@ IP address: 184.85.215.24
 
 ## Give three search queries and the domain of the site for each query made from source IP address `192.168.0.100`
 
-1. Standard query 0x39e6 A accounts.l.google.com
-2. Standard query 0xe1ac A nipc.org
-3. Standard query 0xf772 A completion.amazon.com
+1. http://completion.amazon.com/search/complete?method=completion&q=adventures%20in%20Stochastic%20Processes&search-alias=stripbooks&client=amazon-search-ui&mkt=1&fb=1&xcat=0&x=updateISSCompletion&sc=1&noCacheIE=1393230040894
+query: adventures in Stochastic Processes
+domain: completion.amazon.com
+
+2. http://www.bing.com/search?q=madison+map&go=&qs=n&form=QBLH&pq=madison+map&sc=8-5&sp=-1&sk=&cvid=21ab45dc55634583bed819be11051864
+query: madison map
+domain: www.bing.com
+
+3. http://www.bing.com/search?q=chicago+metro&go=%E6%8F%90%E4%BA%A4&qs=n&form=QBRE&pq=chicago+metro&sc=8-13&sp=-1&sk=&cvid=3dafaeb94bb04c35a9efa4621371beb1
+query: chicago metro
+domain: www.bing.com
+
 
 # Trace 2: FTP
 ## What is the user name and password used to connect to the FTP server?
