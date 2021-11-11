@@ -1,3 +1,6 @@
 *.o
 targets/target[0-5]
 sploits/sploit[0-5]
+.gdb_history
+peda*
+*.asm
