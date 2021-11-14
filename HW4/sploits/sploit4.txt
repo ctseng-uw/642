@@ -1,1 +1,26 @@
-Use this file to explain how your sploit4 works.
+Explanation
+
+The program frees an incorrect pointer, causing double-free.
+
+The format of the attack string is
+`[Multiple 0s][0x08059950][0xbffffa7c][\xeb\x06\x90\x90][yyyy][Shellcode][Multiple 0s]`
+1. [Multiple 0s]: These are here so the next section will be exactly where `q` points to.
+2. [0x08059950]: This is the address to (saved eip - 4) on stack.
+3. [0xbffffa7c]: This is the address to the start of section (4)
+4. [\xeb\x06\x90\x90]: This is the machine code `jmp 0x8 nop nop`, if executed the, `ip` will jump directly to section (6)
+5. [yyyy]: This part will eventually get overwritten, so we don't really care. However, the last bit of this value needs to be 1.
+6. [Shellcode]: This part contains the shellcode
+7. [Multiple 0s]: These are just leftover zeros from testing
+
+The interesting part is in around line 113 of `tmalloc.c`, where we can make the program overwrite its eip
+```
+                                   // p points to section 2
+q = p->s.l;                        // q now contains the value of section 2
+if (q != NULL && GET_FREEBIT(q)) { // Check if the value of section 5 end with a 1 bit
+    CLR_FREEBIT(q);
+    q->s.r = p->s.r;               // Overwrite eip with the value of section 3
+    p->s.r->s.l = q;               // Overwrite section 5 with garbage
+    SET_FREEBIT(q);
+    p = q;
+}
+```

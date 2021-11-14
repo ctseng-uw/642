@@ -1,1 +1,11 @@
-Use this file to explain how your sploit0 works.
+Explanation
+
+The program contains unsafe use of `strcpy`, therefore we can overwrite eip to hijack control flow.
+
+The format of the attack string is
+[32 0s][0xbffff888][0x0804851d]
+1. [32 0s]: This part contains 32 0s to fill up the legitimate space of `buf`
+2. [0xbffff888]: This is whatever the program stored in the saved EBP section (Discovered via GDB)
+3. [0x0804851d]: This is an address that points to the code `grade='A'`
+
+When the code return from `check_fail`, it will resume execution from the line `grade='A'` causes it to print `Grade = A`.

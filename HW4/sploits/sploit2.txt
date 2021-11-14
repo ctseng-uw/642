@@ -1,1 +1,15 @@
-Use this file to explain how your sploit2 works.
+Explanation
+
+The program contains incorrect check length check (`i <= len`), therefore we can overwrite one byte of saved ebp.
+
+The format of the attack string is
+`[Shellcode][000][0x0xbffffcf4][Multiple 0s][0x20]`
+1. [Shellcode]: This part contains the shellcode
+2. [000]: This is here so that the address of the next section will be 4-byte aligned (shouldn't be necessary)
+3. [0xbffffcf4]: The is the address to the start of the shellcode, (which is also the address of `buf`)
+4. [multiple 0s]: These are for padding so the next byte will override `saved ebp`
+5. [0x20]: This is the LSB of the address to section (3)
+
+
+When returning from `nstrcpy`, the program's ebp will be malformed since we overwrote the LSB of it.
+After that, when returning from `bar` the program will want to pop `eip` from the stack, but since `ebp` was modified, it will pop the address of the shellcode to `eip`.
