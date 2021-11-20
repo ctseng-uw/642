@@ -2,33 +2,30 @@ This is a format string attack.
 
 The structure is like below.
 
-| eip + nop*4 | (eip+1) + nop*4 | (eip+2) + nop*4 | (eip+3) + nop*4 | %04x%08x | (%()u%n)*4 | nop sled | shellcode(45)  |   
+| (&eip+1) + nop*4 | (&eip+2) + nop*4 | (&eip+3) + nop*4 | %08x%08x | (%()u%n)*3 | nop sled | shellcode(45)  | nop sled |   
 
-|                              A                                    |     B    |     C      |          D                |
+|                              A                         |     B    |     C      |          D                           |
 
 The idea is to write the target address to eip by snprintf.
+The target address in this sploit is used the input part's(arg) shellcode address but not the buffer's.
 
 PART A:
 
 In order to put the target address to right place, the first part of the string is the address of eip. We will write to each byte of $eip seperately, so the addr is the addr for each byte of $eip.
+We only overwrite the most significant three bytes, so just the three bytes' address.
 
 PART B:
 
-By gdb, we found that in snprintf, the stack will push ebp and ebx into it, which means the stack is like
-|ebx(16 bits = 2 bytes)|ebp(32 bits = 4 bytes) | &buf |...
+By gdb, we found that in snprintf, the stack has other data on the top, which means the stack is like
+|8 | 8 | &buf |...
 
 Because we want to use buf to control the address we want to overwrite by snprintf + %n, so we will want the $esp to point to buf before every overwriting.
-"%04x%08x" is to move the stack pointer to buf.(It seems like pop out the top 2 elements in stack.)
+"%08x%08x" is to move the stack pointer to buf.(It seems like pop out the top 2 elements in stack.)
 
 PART C:
 
 The target address is like other buffer overflow attack, which is in the range of nop sled. 
 Because %n will write the number of bytes before it, so we can use %u to let the number of bytes equal to the value we want to overwrite.
-
-The target address is 0xbffff4fc, and we will need to write it 2 bytes at a time, so it will be fc,f4,ff,bf.
-Just transform each to decimal and calculate the difference. So,0xfc is 252, before the first %n, now we have 44 bytes, so we need to add %208u.
-And for 0xf4, it is 248 which is smaller than 252, but we will only write to the last 2 bytes, therefore we can use 0x1f4 to do the calculation. 0x1f4 is 500, therefore we will need 500-252 = 248 more bytes -> %248u.
-And so on...
 
 PART D:
 just the ordinary buffer overflow attack, nop and shellcode.
