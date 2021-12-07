@@ -1,0 +1,47 @@
+1. Chang-Yen Tseng (ctseng27)
+2. Pei-Chieh Lo (plo7)  
+
+1. BadgerCam
+    - Vulnerabilities
+    - Steps
+    - Mitigation
+
+
+2. Router
+    - Vulnerabilities
+    - Steps
+    - Mitigation
+
+
+3. BadgerSpeaker
+    - Vulnerabilities
+        - The device has an API that does not need any kind of authorization
+    - Steps
+        - Set up port forwarding in the router
+        - Send an audio file (that says "turn on the microwave") via API
+        - `curl -d "url={url to flac}" -X POST [speaker ip]:[port] --socks5 localhost:1080`
+    - Mitigation
+        - Implement username/password or other authorization methods on the API
+
+
+4. BadgerVoice
+    - Vulnerabilities
+        - The device responds to any voice command
+        - The device expose voice commands to the web so the attacker can know if their attack works or not
+        - Place just beside a network-enabled speaker
+    - Steps
+        - As soon as we send the audio file to BadgerSpeaker, this device re   sponds and start the microwave
+    - Mitigation
+        - Use a voice model so that the device will only respond to the owner's voice
+        - Do not expose log on the web
+        - Do not place beside a smart speaker
+
+
+5. Microwave
+    - Vulnerabilities
+        - It is connected to a vulnerable digital assistant
+    - Steps
+        - This device is compromised the moment we compromise BadgerSpeaker and BadgerVoice
+    - Mitigation
+        - Do not connect to a vulnerable digital assistant
+        - Swap this microwave to another one that will not cause fire just by turning it on
