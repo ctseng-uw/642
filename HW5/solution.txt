@@ -3,14 +3,26 @@
 
 1. BadgerCam
     - Vulnerabilities
+        - searchable on Nidan + username/password combo preset
     - Steps
+        - search on Nidan search engine by the name
+        - get the website to get in the BadgerCam (http://[2607:f388:1080:0700:bb84:380e:1e2d:5710]:8001)
+        - try every username/password pair to get in ("admin", "123456")
     - Mitigation
-
+        - make it unsearchable from the IOT search engine if possible 
+        - do not use easily-guessed/frequently-used username and/or password 
+        - do not store the password anywhere
 
 2. Router
     - Vulnerabilities
+        - searchable on Nidan + username/password showing in the BadgerCam
     - Steps
+        - search on Nidan by the same organization as BadgerCam
+        - get the router's website by search engine(http://[2607:f388:1080:0700:bb84:380e:1e2d:5710]:8004)
+        - login by the username/password pair showing on BadgerCam's monitor("admin","husk1e$are@wesome!!")
     - Mitigation
+        - make it unsearchable from the IOT search engine if possible
+        - do not show the password in any public places
 
 
 3. BadgerSpeaker
